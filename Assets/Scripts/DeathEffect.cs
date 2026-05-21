@@ -1,42 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// Script tạo hiệu ứng khi Player chết
-// Gắn lên GameObject "Player"
 public class DeathEffect : MonoBehaviour
 {
     [Header("=== SCREEN SHAKE ===")]
     public float doDungCamera = 0.15f;
-    // Biên độ rung — số càng lớn rung càng mạnh
-
     public float thoiGianRung = 0.2f;
-    // Rung trong bao lâu (giây)
 
     [Header("=== FLASH ĐỎ ===")]
     public float thoiGianFlash = 0.1f;
-    // Flash đỏ hiện trong bao lâu (giây)
 
-    // Tham chiếu nội bộ
     private SpriteRenderer spriteRenderer;
-    // Dùng để đổi màu Player khi chết
-
     private Color mauGoc;
-    // Lưu màu gốc để khôi phục lại sau khi flash
+    private PlayerController playerController;
 
     void Start()
     {
-        // Lấy SpriteRenderer gắn trên Player
         spriteRenderer = GetComponent<SpriteRenderer>();
-
-        // Lưu màu gốc của Player (cam đỏ E85D04)
         mauGoc = spriteRenderer.color;
+        playerController = GetComponent<PlayerController>();
     }
 
-    // =============================================================
-    // HÀM NÀY GỌI TỪ KILLZONE KHI PLAYER CHẾT
-    // Thay vì gọi GameManager.PlayerChet() trực tiếp,
-    // KillZone sẽ gọi hàm này trước để chạy effect, rồi mới chết
-    // =============================================================
     public void KichHoatHieuUng()
     {
         StartCoroutine(ChayHieuUng());
@@ -44,51 +28,42 @@ public class DeathEffect : MonoBehaviour
 
     IEnumerator ChayHieuUng()
     {
-        // SFX chết ngay lập tức — nghe đồng thời với flash
+        // Pause nhân vật ngay lập tức
+        if (playerController != null)
+            playerController.enabled = false;
+
+        // SFX chết
         if (SoundManager.instance != null)
             SoundManager.instance.PlayChet();
 
-        // --- FLASH ĐỎ ---
+        // Flash đỏ
         spriteRenderer.color = Color.red;
         yield return new WaitForSeconds(thoiGianFlash);
         spriteRenderer.color = mauGoc;
 
-        // --- SCREEN SHAKE ---
+        // Screen shake
         StartCoroutine(RungCamera());
         yield return new WaitForSeconds(thoiGianRung);
 
+        // PlayerController sẽ tự bật lại khi scene reload
         GameManager.instance.PlayerChet();
     }
 
     IEnumerator RungCamera()
     {
-        // Lấy camera chính trong scene
         Camera cam = Camera.main;
-
-        // Lưu vị trí gốc của camera
         Vector3 viTriGoc = cam.transform.position;
-
-        // Biến đếm thời gian đã rung
         float thoiGianDaRung = 0f;
 
-        // Lặp liên tục cho đến khi hết thời gian rung
         while (thoiGianDaRung < thoiGianRung)
         {
-            // Tạo vị trí ngẫu nhiên xung quanh vị trí gốc
             float x = viTriGoc.x + Random.Range(-doDungCamera, doDungCamera);
             float y = viTriGoc.y + Random.Range(-doDungCamera, doDungCamera);
-
-            // Di chuyển camera tới vị trí ngẫu nhiên đó
             cam.transform.position = new Vector3(x, y, viTriGoc.z);
-
-            // Tăng thời gian đếm
             thoiGianDaRung += Time.deltaTime;
-
-            // Đợi sang frame tiếp theo
             yield return null;
         }
 
-        // Rung xong → khôi phục camera về vị trí gốc
         cam.transform.position = viTriGoc;
     }
 }

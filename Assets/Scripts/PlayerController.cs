@@ -22,9 +22,11 @@ public class PlayerController : MonoBehaviour
     private bool dangGiuNutNhay;
     private float thoiGianDaGiuNhay = 0f;
     private bool dangEpVaoTuong = false;
-
-    // Footstep timer
     private float footstepTimer = 0f;
+
+    // Lò xo
+    private float lucLoXo = 0f;
+    private bool dangNayLoXo = false;
 
     void Start()
     {
@@ -35,7 +37,6 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // === INPUT NGANG ===
         huongNgang = 0f;
         if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
             huongNgang -= 1f;
@@ -43,20 +44,16 @@ public class PlayerController : MonoBehaviour
             huongNgang += 1f;
         huongNgang = Mathf.Clamp(huongNgang, -1f, 1f);
 
-        // === NHẢY ===
         if (Input.GetKeyDown(KeyCode.Space)
          || Input.GetKeyDown(KeyCode.W)
          || Input.GetKeyDown(KeyCode.UpArrow))
         {
             muonNhay = true;
             thoiGianDaGiuNhay = 0f;
-
-            // SFX nhảy
             if (SoundManager.instance != null)
                 SoundManager.instance.PlayNhay();
         }
 
-        // Giữ nút nhảy — có giới hạn thời gian
         bool nutNhayDangGiu = Input.GetKey(KeyCode.Space)
                            || Input.GetKey(KeyCode.W)
                            || Input.GetKey(KeyCode.UpArrow);
@@ -72,7 +69,6 @@ public class PlayerController : MonoBehaviour
             if (dangDungTrenDat) thoiGianDaGiuNhay = 0f;
         }
 
-        // === SFX CHẠY (footstep) ===
         if (dangDungTrenDat && Mathf.Abs(huongNgang) > 0.1f)
         {
             footstepTimer -= Time.deltaTime;
@@ -83,12 +79,8 @@ public class PlayerController : MonoBehaviour
                 footstepTimer = 0.25f;
             }
         }
-        else
-        {
-            footstepTimer = 0f;
-        }
+        else footstepTimer = 0f;
 
-        // === FLIP SPRITE ===
         if (huongNgang > 0) sr.flipX = false;
         else if (huongNgang < 0) sr.flipX = true;
 
@@ -106,56 +98,61 @@ public class PlayerController : MonoBehaviour
 
     void KiemTraMatDat()
     {
+        // Tăng radius từ 0.15 lên 0.2 và kiểm tra thêm debug
         dangDungTrenDat = Physics2D.OverlapCircle(
             (Vector2)transform.position + Vector2.down * 0.6f,
-            0.15f,
+            0.2f,
             layerMatDat
         );
+    }
+
+    void OnDrawGizmos()
+    {
+        // Vẽ vùng check mặt đất — xanh = đang đứng, đỏ = đang rơi
+        Gizmos.color = dangDungTrenDat ? Color.green : Color.red;
+        Gizmos.DrawWireSphere(
+            (Vector2)transform.position + Vector2.down * 0.6f,
+            0.2f);
     }
 
     void KiemTraEpTuong()
     {
         float khoangKiemTra = 0.35f;
         bool tuongTrai = Physics2D.Raycast(
-            transform.position, Vector2.left,
-            khoangKiemTra, layerMatDat);
+            transform.position, Vector2.left, khoangKiemTra, layerMatDat);
         bool tuongPhai = Physics2D.Raycast(
-            transform.position, Vector2.right,
-            khoangKiemTra, layerMatDat);
-
+            transform.position, Vector2.right, khoangKiemTra, layerMatDat);
         dangEpVaoTuong = !dangDungTrenDat &&
-            ((tuongTrai && huongNgang < 0) ||
-             (tuongPhai && huongNgang > 0));
+            ((tuongTrai && huongNgang < 0) || (tuongPhai && huongNgang > 0));
     }
 
     void DiChuyen()
     {
         rb.linearVelocity = new Vector2(
             huongNgang * tocDoChay,
-            rb.linearVelocity.y
-        );
+            rb.linearVelocity.y);
     }
 
     void Nhay()
     {
+        // Nhảy thường
         if (muonNhay && dangDungTrenDat)
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, lucNhay);
         muonNhay = false;
+
+        // Lò xo — xử lý sau DiChuyen() nên không bị override
+        if (dangNayLoXo)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, lucLoXo);
+            dangNayLoXo = false;
+            lucLoXo = 0f;
+        }
     }
 
     void CapNhatTrongLuc()
     {
-        if (dangEpVaoTuong)
-        {
-            rb.gravityScale = trongLucRoi;
-            return;
-        }
-
-        if (dangDungTrenDat)
-        {
-            rb.gravityScale = 1f;
-            return;
-        }
+        if (dangEpVaoTuong) { rb.gravityScale = trongLucRoi; return; }
+        if (dangDungTrenDat) { rb.gravityScale = 1f; return; }
 
         if (rb.linearVelocity.y < 0)
             rb.gravityScale = trongLucRoi;
@@ -170,7 +167,13 @@ public class PlayerController : MonoBehaviour
         if (animator == null) return;
         animator.SetFloat("Speed", Mathf.Abs(rb.linearVelocity.x));
         animator.SetBool("IsGrounded", dangDungTrenDat);
-        animator.SetBool("IsFalling",
-            rb.linearVelocity.y < -0.1f && !dangDungTrenDat);
+        animator.SetBool("IsFalling", rb.linearVelocity.y < -0.1f && !dangDungTrenDat);
+    }
+
+    // Gọi từ SpringTrap
+    public void NayLoXo(float luc)
+    {
+        lucLoXo = luc;
+        dangNayLoXo = true;
     }
 }

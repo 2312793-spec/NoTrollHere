@@ -3,15 +3,24 @@ using System.Collections;
 
 public class FallingBrick : MonoBehaviour
 {
-    [Header("=== CÀI ĐẶT ===")]
+    public enum CheDoSauKhiRoi
+    {
+        HoiSinh,
+        BienMat
+    }
+
+    [Header("=== THỜI GIAN ===")]
     public float thoiGianChoTruocKhiRoi = 0.3f;
-    // Delay trước khi rơi
 
+    [Header("=== SAU KHI RƠI ===")]
+    public CheDoSauKhiRoi cheDoSauKhiRoi = CheDoSauKhiRoi.HoiSinh;
     public float thoiGianHoiSinh = 3f;
-    // Bao lâu thì xuất hiện lại
 
-    public bool dangRoi = false;
-    // Public để BrickKillZone đọc được
+    [Header("=== ROI XUYÊN MAP ===")]
+    public float tocDoRoi = 20f;
+    public float khoangRoiTruocKhiBienMat = 15f;
+
+    [HideInInspector] public bool dangRoi = false;
 
     private Rigidbody2D rb;
     private Vector3 viTriGoc;
@@ -37,40 +46,38 @@ public class FallingBrick : MonoBehaviour
 
     IEnumerator DemGioRoi()
     {
-        // Đợi chút rồi rơi
-        yield return new WaitForSeconds(thoiGianChoTruocKhiRoi);
-
-        // Rung nhẹ báo hiệu sắp rơi
-        float thoiGianRung = 0.2f;
-        float daRung = 0f;
-        while (daRung < thoiGianRung)
+        if (thoiGianChoTruocKhiRoi > 0)
         {
-            float offsetX = Random.Range(-0.05f, 0.05f);
-            transform.position = viTriGoc + new Vector3(offsetX, 0, 0);
-            daRung += Time.deltaTime;
-            yield return null;
+            float daRung = 0f;
+            while (daRung < thoiGianChoTruocKhiRoi)
+            {
+                float offsetX = Random.Range(-0.05f, 0.05f);
+                transform.position = viTriGoc + new Vector3(offsetX, 0, 0);
+                daRung += Time.deltaTime;
+                yield return null;
+            }
+            transform.position = viTriGoc;
         }
-        transform.position = viTriGoc;
 
-        // Tắt collider ngay — không cần rơi vật lý
-        // Gạch sẽ "rơi" bằng cách di chuyển thủ công xuống dưới
         col.enabled = false;
 
-        // Di chuyển gạch xuống nhanh (giả lập rơi)
-        float tocDoRoi = 20f;
-        while (transform.position.y > viTriGoc.y - 10f)
+        float diaDiem = viTriGoc.y - khoangRoiTruocKhiBienMat;
+        while (transform.position.y > diaDiem)
         {
             transform.position += Vector3.down * tocDoRoi * Time.deltaTime;
             yield return null;
         }
 
-        // Ẩn sprite
         sr.enabled = false;
 
-        // Đợi rồi hồi sinh
+        if (cheDoSauKhiRoi == CheDoSauKhiRoi.BienMat)
+        {
+            Destroy(gameObject);
+            yield break;
+        }
+
         yield return new WaitForSeconds(thoiGianHoiSinh);
 
-        // Khôi phục
         transform.position = viTriGoc;
         col.enabled = true;
         sr.enabled = true;
