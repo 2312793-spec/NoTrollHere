@@ -52,6 +52,17 @@ public class GameManager : MonoBehaviour
         soLanChet++;
         tongSoLanChetSession++;
 
+        // Lưu tổng số chết vĩnh viễn
+        int tongHienTai = PlayerPrefs.GetInt("Deaths_Total", 0);
+        PlayerPrefs.SetInt("Deaths_Total", tongHienTai + 1);
+
+        // Lưu số chết theo từng level
+        string tenLevel = UnityEngine.SceneManagement
+            .SceneManager.GetActiveScene().name;
+        int chetLevelNay = PlayerPrefs.GetInt("Deaths_" + tenLevel, 0);
+        PlayerPrefs.SetInt("Deaths_" + tenLevel, chetLevelNay + 1);
+        PlayerPrefs.Save();
+
         if (PauseMenu.instance != null)
             PauseMenu.instance.ThemMotLanChet();
 
@@ -171,5 +182,11 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.DeleteAll();
         KhoiTaoUnlock();
         Debug.Log("Đã reset toàn bộ progress!");
+    }
+
+    // Tổng số lần chết toàn bộ — đọc từ PlayerPrefs
+    public int LayTongSoLanChetTatCa()
+    {
+        return PlayerPrefs.GetInt("Deaths_Total", 0);
     }
 }

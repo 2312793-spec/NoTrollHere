@@ -15,22 +15,74 @@ public class LevelSelectManager : MonoBehaviour
     [Header("=== CÀI ĐẶT ===")]
     public string tenSceneMainMenu = "MainMenu";
 
-    private readonly string[] tenCacChuong = { "CHAPTER 1", "SPECIAL" };
-    private readonly string[] moTaCacChuong = { "choose your suffering", "something special" };
-    private readonly string[] prefixCacChuong = { "Level_1_", "Level_S_" };
-    private readonly int[] soManCacChuong = { 10, 1 };
+    // =============================================================
+    // THỨ TỰ CHƯƠNG: Special(0 trái) ← Chapter1(1 giữa) → Chapter2(2) → Chapter3(3)...
+    // Index 0 = Special, Index 1 = Ch1, Index 2 = Ch2, ...
+    // =============================================================
+    private readonly string[] tenCacChuong =
+    {
+        "SPECIAL",      // 0 — trái nhất
+        "CHAPTER 1",    // 1 — mặc định khi mở
+        "CHAPTER 2",    // 2
+        "CHAPTER 3",    // 3
+        "CHAPTER 4",    // 4
+    };
 
+    private readonly string[] moTaCacChuong =
+    {
+        "something else entirely",
+        "choose your suffering",
+        "into the forest",
+        "the volcano awaits",
+        "into the abyss",
+    };
+
+    private readonly string[] prefixCacChuong =
+    {
+        "Level_S_",
+        "Level_1_",
+        "Level_2_",
+        "Level_3_",
+        "Level_4_",
+    };
+
+    private readonly int[] soManCacChuong =
+    {
+        1,   // Special: 1 màn tutorial
+        10,  // Chapter 1
+        10,  // Chapter 2
+        10,  // Chapter 3
+        10,  // Chapter 4
+    };
+
+    private readonly Color[] mauAccentChuong =
+    {
+        new Color(0.75f, 0.52f, 0.99f, 1f), // Special: tím #C084FC
+        new Color(0.96f, 0.78f, 0.26f, 1f), // Ch1: vàng #F5C842
+        new Color(0.29f, 0.87f, 0.50f, 1f), // Ch2: xanh lá #4ADE80
+        new Color(0.98f, 0.57f, 0.24f, 1f), // Ch3: cam #FB923C
+        new Color(0.38f, 0.65f, 0.98f, 1f), // Ch4: xanh dương #60A5FA
+    };
+
+    private readonly Color[] mauNenDangChoiChuong =
+    {
+        new Color(0.10f, 0.05f, 0.15f, 1f), // Special: tím tối
+        new Color(0.16f, 0.13f, 0.00f, 1f), // Ch1: vàng tối
+        new Color(0.05f, 0.13f, 0.07f, 1f), // Ch2: xanh tối
+        new Color(0.15f, 0.06f, 0.02f, 1f), // Ch3: cam tối
+        new Color(0.03f, 0.08f, 0.15f, 1f), // Ch4: xanh dương tối
+    };
+
+    // Màu chung
     private readonly Color mauNenDaMo = new Color(0.18f, 0.18f, 0.18f, 1f);
-    private readonly Color mauNenDangChoi = new Color(0.16f, 0.13f, 0.00f, 1f);
     private readonly Color mauNenLock = new Color(0.11f, 0.11f, 0.11f, 1f);
     private readonly Color mauVienDaMo = new Color(0.23f, 0.23f, 0.23f, 1f);
-    private readonly Color mauVienDangChoi = new Color(0.96f, 0.78f, 0.26f, 1f);
     private readonly Color mauVienLock = new Color(0.14f, 0.14f, 0.14f, 1f);
     private readonly Color mauChuDaMo = new Color(0.91f, 0.91f, 0.82f, 1f);
-    private readonly Color mauChuDangChoi = new Color(0.96f, 0.78f, 0.26f, 1f);
     private readonly Color mauChuLock = new Color(0.20f, 0.20f, 0.20f, 1f);
 
-    private int chuongHienTai = 0;
+    // Index 1 = Chapter 1 = mặc định khi mở
+    private int chuongHienTai = 1;
     private string levelMoiNhat = "Level_1_1";
 
     void Start()
@@ -40,16 +92,24 @@ public class LevelSelectManager : MonoBehaviour
         else
             levelMoiNhat = PlayerPrefs.GetString("LatestLevel", "Level_1_1");
 
-        chuongHienTai = levelMoiNhat.StartsWith("Level_S_") ? 1 : 0;
+        // Luôn mở ở Chapter 1 (index 1) khi vào Level Select
+        chuongHienTai = 1;
         HienThiChuong(chuongHienTai);
     }
 
+    // =============================================================
+    // HIỂN THỊ CHƯƠNG
+    // =============================================================
     void HienThiChuong(int idx)
     {
+        if (ChapterBackground.instance != null)
+            ChapterBackground.instance.DoiChuong(idx);
+
         bool duocXem = KiemTraDuocXem(idx);
 
         txtTenChuong.text = "— " + tenCacChuong[idx] + " —";
         txtMoTaChuong.text = duocXem ? moTaCacChuong[idx] : "???";
+        txtTenChuong.color = duocXem ? mauAccentChuong[idx] : mauChuLock;
 
         CapNhatMuiTen(idx);
 
@@ -77,14 +137,19 @@ public class LevelSelectManager : MonoBehaviour
             TextMeshProUGUI txtIcon = cacNutLevel[i]
                 .transform.Find("Txt_Icon")?.GetComponent<TextMeshProUGUI>();
 
+            Color accent = mauAccentChuong[idx];
+            Color nenActive = mauNenDangChoiChuong[idx];
+
             if (!daUnlock)
             {
+                // LOCKED — không có icon
                 SetNut(img, outline, btn, txtSo, txtIcon,
                     mauNenLock, mauVienLock, mauChuLock,
-                    soThuTu.ToString(), "X", false);
+                    soThuTu.ToString(), "", false);
             }
             else if (daPassed)
             {
+                // ĐÃ PASS — có dấu *
                 SetNut(img, outline, btn, txtSo, txtIcon,
                     mauNenDaMo, mauVienDaMo, mauChuDaMo,
                     soThuTu.ToString(), "*", true);
@@ -92,13 +157,15 @@ public class LevelSelectManager : MonoBehaviour
             }
             else if (laMoiNhat)
             {
+                // ĐANG CHƠI — không có icon
                 SetNut(img, outline, btn, txtSo, txtIcon,
-                    mauNenDangChoi, mauVienDangChoi, mauChuDangChoi,
+                    nenActive, accent, accent,
                     soThuTu.ToString(), "", true);
                 GanOnClick(btn, tenLevel);
             }
             else
             {
+                // UNLOCK CHƯA CHƠI — không có icon
                 SetNut(img, outline, btn, txtSo, txtIcon,
                     mauNenDaMo, mauVienDaMo, mauChuDaMo,
                     soThuTu.ToString(), "", true);
@@ -107,6 +174,9 @@ public class LevelSelectManager : MonoBehaviour
         }
     }
 
+    // =============================================================
+    // HELPERS
+    // =============================================================
     void SetNut(Image img, Outline outline, Button btn,
         TextMeshProUGUI txtSo, TextMeshProUGUI txtIcon,
         Color mauNen, Color mauVien, Color mauChu,
@@ -127,31 +197,49 @@ public class LevelSelectManager : MonoBehaviour
 
     void CapNhatMuiTen(int idx)
     {
+        // Trái — về Special (idx 0) hoặc các chương trước
         if (nutTrai != null)
         {
-            nutTrai.interactable = idx > 0;
+            bool coTrai = idx > 0;
+            nutTrai.interactable = coTrai;
             CanvasGroup cg = nutTrai.GetComponent<CanvasGroup>();
-            if (cg != null) cg.alpha = idx > 0 ? 1f : 0.25f;
+            if (cg != null) cg.alpha = coTrai ? 1f : 0.25f;
         }
+
+        // Phải — sang chương sau (chỉ nếu đã unlock)
         if (nutPhai != null)
         {
-            bool coManPhia = idx < tenCacChuong.Length - 1;
-            nutPhai.interactable = coManPhia;
+            bool coTiep = idx < tenCacChuong.Length - 1;
+            bool tiepDaUnlock = coTiep && KiemTraDuocXem(idx + 1);
+            nutPhai.interactable = coTiep;
             CanvasGroup cg = nutPhai.GetComponent<CanvasGroup>();
-            if (cg != null) cg.alpha = coManPhia ? 1f : 0.25f;
+            if (cg != null) cg.alpha = tiepDaUnlock ? 1f : 0.25f;
         }
     }
 
+    // =============================================================
+    // KIỂM TRA UNLOCK
+    // =============================================================
     bool KiemTraDuocXem(int idx)
     {
-        if (idx == 0) return true;
-        if (idx == 1)
+        // Chapter 1 luôn xem được
+        if (idx == 1) return true;
+
+        // Special (idx 0) — unlock sau khi pass Ch1 màn 1-9
+        if (idx == 0)
         {
             if (GameManager.instance != null)
                 return GameManager.instance.LaChapterSpecialDaMo();
             return PlayerPrefs.GetInt("Chapter_Special_unlocked", 0) == 1;
         }
-        return false;
+
+        // Chapter 2, 3, 4... — unlock sau khi pass màn 10 chương trước
+        // idx=2 → Ch2 → cần pass Level_1_10
+        // idx=3 → Ch3 → cần pass Level_2_10
+        // idx=4 → Ch4 → cần pass Level_3_10
+        int chuongTruoc = idx - 1; // chapter number (1-based)
+        string keyMan10 = $"Level_{chuongTruoc}_10_passed";
+        return PlayerPrefs.GetInt(keyMan10, 0) == 1;
     }
 
     bool KiemTraUnlock(string tenLevel)
@@ -161,6 +249,9 @@ public class LevelSelectManager : MonoBehaviour
         return PlayerPrefs.GetInt(tenLevel + "_unlocked", 0) == 1;
     }
 
+    // =============================================================
+    // NÚT MŨI TÊN
+    // =============================================================
     public void NutTrai()
     {
         if (chuongHienTai > 0)

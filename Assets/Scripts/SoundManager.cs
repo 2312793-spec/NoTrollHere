@@ -276,4 +276,10 @@ public class SoundManager : MonoBehaviour
         clip.SetData(data, 0);
         return clip;
     }
+
+    public void CapNhatVolumeMusic()
+    {
+        if (musicSource != null)
+            musicSource.volume = volumeMusic;
+    }
 }

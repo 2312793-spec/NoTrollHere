@@ -2041,6 +2041,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5715000487591479423, guid: 47b0cf3f441c11e46806c9d65dfc6d3a, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9163524098249059611, guid: 47b0cf3f441c11e46806c9d65dfc6d3a, type: 3}
       propertyPath: tenManTiepTheo
       value: Level_1_10
