@@ -136,12 +136,11 @@ public class PlayerController : MonoBehaviour
 
     void DiChuyen()
     {
-        // Đang trong thời gian lò xo → không override velocity
-        if (thoiGianDaGiuLoXo > 0)
-        {
-            thoiGianDaGiuLoXo -= Time.fixedDeltaTime;
+        // Chỉ block di chuyển khi lò xo theo chiều NGANG
+        // Lò xo thẳng lên (huongLoXo.x nhỏ) → vẫn cho di chuyển bình thường
+        if (dangNayLoXo && Mathf.Abs(huongLoXo.x) > 0.5f
+            && thoiGianDaGiuLoXo > 0.1f)
             return;
-        }
 
         rb.linearVelocity = new Vector2(
             huongNgang * tocDoChay,
@@ -156,10 +155,20 @@ public class PlayerController : MonoBehaviour
 
         if (dangNayLoXo)
         {
-            rb.linearVelocity = huongLoXo * lucLoXo;
+            if (Mathf.Abs(huongLoXo.x) < 0.3f)
+            {
+                // Lò xo thẳng lên — chỉ set velocity.y, giữ velocity.x từ input
+                rb.linearVelocity = new Vector2(
+                    huongNgang * tocDoChay,
+                    huongLoXo.y * lucLoXo);
+            }
+            else
+            {
+                // Lò xo ngang — set toàn bộ velocity
+                rb.linearVelocity = huongLoXo * lucLoXo;
+            }
             dangNayLoXo = false;
             lucLoXo = 0f;
-            // Bắt đầu đếm thời gian giữ lực lò xo
             thoiGianDaGiuLoXo = thoiGianGiuLoXo;
         }
     }

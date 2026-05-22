@@ -61,4 +61,18 @@ public class TileCreator : MonoBehaviour
 
         Debug.Log($"✅ Tạo {ten}.png thành công");
     }
+
+    [MenuItem("NoTrollHere/Create Chapter 2 Sprites")]
+    static void TaoSpriteChuong2()
+    {
+        if (!AssetDatabase.IsValidFolder("Assets/Sprites/Tiles/Chuong2"))
+            AssetDatabase.CreateFolder("Assets/Sprites/Tiles", "Chuong2");
+
+        TaoSpriteMau("Chuong2/TileGround_C2", 0x1E3A25);
+        TaoSpriteMau("Chuong2/TileGround2_C2", 0x2A4A30);
+        TaoSpriteMau("Chuong2/TileWall_C2", 0x1E3A25);
+
+        AssetDatabase.Refresh();
+        Debug.Log("✅ Đã tạo tile Chương 2");
+    }
 }
