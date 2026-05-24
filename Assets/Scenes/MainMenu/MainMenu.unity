@@ -3194,9 +3194,45 @@ MonoBehaviour:
   cacSkinSprite:
   - id: Default
     sprite: {fileID: -13559271439482278, guid: 3a1827d9a177b6a459eb3c949593005f, type: 3}
+  - id: Ember
+    sprite: {fileID: -1607908271369683812, guid: 76aaf4126f6c78949856317ffa6b0e2c, type: 3}
+  - id: Ghost
+    sprite: {fileID: 7936486228879066825, guid: b3934e9ff3e1b2548ad6347c04240ddf, type: 3}
+  - id: Forest
+    sprite: {fileID: -1311839034932052595, guid: df11806c5ae16024aa2c3b81da9b5103, type: 3}
+  - id: IceMan
+    sprite: {fileID: -3846865590236022187, guid: 1a242a2d1dde9eb44a77b1f71fb6f45a, type: 3}
+  - id: Lava
+    sprite: {fileID: -601455084947157563, guid: fe3773d89b5c48048a9dbf47d6477601, type: 3}
+  - id: Robot
+    sprite: {fileID: -8674017156777894541, guid: b55fdd229b6072d40b432c1eccd1201d, type: 3}
+  - id: Skeleton
+    sprite: {fileID: 974454145173233367, guid: ca69a817922a6394e9569689a3622b7a, type: 3}
+  - id: Golden
+    sprite: {fileID: -8407909621088902531, guid: 906b77c7a7e6ae24e9ce3fcc97d0ec4f, type: 3}
+  - id: Void
+    sprite: {fileID: -6958238364444310995, guid: f2087cbe96f71a748a7c0c98793063b2, type: 3}
   cacSkinAnimator:
   - id: Default
     controller: {fileID: 9100000, guid: 15c50ec18c548954b8ce22ba2a2bdc4b, type: 2}
+  - id: Ember
+    controller: {fileID: 22100000, guid: 0826f6260fb19594b956cf33c9f1bca4, type: 2}
+  - id: Ghost
+    controller: {fileID: 22100000, guid: c18150bfeb272e648a59b1734e889bff, type: 2}
+  - id: Forest
+    controller: {fileID: 22100000, guid: b2a713fcadad350459c045e0990eb995, type: 2}
+  - id: IceMan
+    controller: {fileID: 22100000, guid: 40a7a8d9f9a61ba4db2265510c94dfb9, type: 2}
+  - id: LavaMan
+    controller: {fileID: 22100000, guid: 6e91971ad4fd4af4aa3a337a5a307a64, type: 2}
+  - id: Robot
+    controller: {fileID: 22100000, guid: dc31bd5e38969804d8a69a60284042f7, type: 2}
+  - id: Skeleton
+    controller: {fileID: 22100000, guid: 444db84be67a5924cb58c8e2bd54ce05, type: 2}
+  - id: Gold
+    controller: {fileID: 22100000, guid: 82ee5185133317043aafba3e0fa1ef43, type: 2}
+  - id: Void
+    controller: {fileID: 22100000, guid: 3e66edc5d0b676742a82981b5951cb87, type: 2}
 --- !u!4 &1250652660
 Transform:
   m_ObjectHideFlags: 0

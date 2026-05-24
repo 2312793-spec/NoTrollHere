@@ -66,29 +66,31 @@ public class SkinManager : MonoBehaviour
     {
         danhSachSkin.Clear();
 
-        // Default — luôn unlock
-        var skinDefault = new Skin("Default", "Default",
-            "Nhân vật chalk nguyên bản", "Mặc định");
-        skinDefault.daUnlock = true;
-        PlayerPrefs.SetInt("Skin_Default_unlocked", 1);
-        danhSachSkin.Add(skinDefault);
-
-        danhSachSkin.Add(new Skin("Ghost", "Ghost",
-            "Trong suốt như... ma", "Chết 100 lần"));
-        danhSachSkin.Add(new Skin("Forest", "Forest",
-            "Hòa mình vào rừng xanh", "Hoàn thành Chapter 2"));
-        danhSachSkin.Add(new Skin("Ember", "Ember",
-            "Tôi luyện qua lửa", "Hoàn thành Chapter 3"));
-        danhSachSkin.Add(new Skin("Void", "Void",
-            "Từ vực thẳm trở về", "Hoàn thành Chapter 4"));
-        danhSachSkin.Add(new Skin("Skeleton", "Skeleton",
-            "Chỉ còn lại xương", "Chết 500 lần"));
-        danhSachSkin.Add(new Skin("Golden", "Golden",
-            "Huyền thoại thực sự", "Hoàn thành tất cả chapter"));
-        danhSachSkin.Add(new Skin("Meta", "Meta",
-            "Bạn đã thấy tất cả", "Hoàn thành Chapter Special"));
+        // Tất cả skin mở từ đầu — khóa lại sau khi gắn achievement
+        ThemSkin("Default", "Default", "Nhân vật chalk nguyên bản", "Mặc định", true);
+        ThemSkin("Ghost", "Ghost", "Trong suốt như... ma", "Chết 100 lần", true);
+        ThemSkin("Forest", "Forest", "Hòa mình vào rừng xanh", "Hoàn thành Chapter 2", true);
+        ThemSkin("Ember", "Ember", "Tôi luyện qua lửa", "Hoàn thành Chapter 3", true);
+        ThemSkin("Void", "Void", "Từ vực thẳm trở về", "Hoàn thành Chapter 4", true);
+        ThemSkin("Skeleton", "Skeleton", "Chỉ còn lại xương", "Chết 500 lần", true);
+        ThemSkin("Golden", "Golden", "Huyền thoại thực sự", "Hoàn thành tất cả", true);
+        ThemSkin("IceMan", "Ice", "Băng giá vĩnh cửu", "Hoàn thành Chapter 4", true);
+        ThemSkin("Lava", "Lava", "Dung nham sục sôi", "Hoàn thành Chapter 3", true);
+        ThemSkin("Robot", "Robot", "Kim loại lạnh lùng", "Qua màn không chết", true);
 
         skinDangDung = PlayerPrefs.GetString("Skin_DangDung", "Default");
+    }
+
+    void ThemSkin(string id, string ten, string moTa,
+        string dieuKien, bool moNgay)
+    {
+        var skin = new Skin(id, ten, moTa, dieuKien);
+        if (moNgay)
+        {
+            skin.daUnlock = true;
+            PlayerPrefs.SetInt("Skin_" + id + "_unlocked", 1);
+        }
+        danhSachSkin.Add(skin);
     }
 
     // =============================================================

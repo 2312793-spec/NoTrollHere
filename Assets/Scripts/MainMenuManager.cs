@@ -25,9 +25,10 @@ public class MainMenuManager : MonoBehaviour
     // === NÚT PLAY ===
     public void NutPlay()
     {
-        // Fallback nếu không có GameManager
-        string levelMoiNhat = "Level_1_1";
+        // Đảm bảo timeScale về 1 trước khi vào game
+        Time.timeScale = 1f;
 
+        string levelMoiNhat = "Level_1_1";
         if (GameManager.instance != null)
             levelMoiNhat = GameManager.instance.LayLevelMoiNhat();
         else
@@ -40,6 +41,7 @@ public class MainMenuManager : MonoBehaviour
     // === NÚT LEVEL SELECT ===
     public void NutLevelSelect()
     {
+        Time.timeScale = 1f;
         StartCoroutine(FadeOutRoi(() =>
             SceneManager.LoadScene(tenSceneLevelSelect)));
     }
@@ -94,6 +96,7 @@ public class MainMenuManager : MonoBehaviour
 
     public void NutSkinSelect()
     {
+        Time.timeScale = 1f;
         StartCoroutine(FadeOutRoi(() =>
             SceneManager.LoadScene("SkinSelect")));
     }

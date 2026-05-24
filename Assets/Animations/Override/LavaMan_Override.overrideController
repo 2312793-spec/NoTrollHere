@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: LavaMan_Override
+  m_Controller: {fileID: 9100000, guid: 15c50ec18c548954b8ce22ba2a2bdc4b, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 5b02773eeab74fa4ba2b6357c8bef893, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 2b5b5aa626746234abb1a45639df8ddc, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 707be2b98742345409033ac1f9f7022c, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: a30657c762ea6f247993b83195185b6b, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: aeb51496aee66bc4eb39245d16cc0eed, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 085fe39d6cc1f8a40a9bee4afa922491, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: e4c292e0cd95749449582dbacb13561f, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 0ae52916ac895874485fe23f96896b77, type: 2}

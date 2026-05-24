@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Robot_Override
+  m_Controller: {fileID: 9100000, guid: 15c50ec18c548954b8ce22ba2a2bdc4b, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 5b02773eeab74fa4ba2b6357c8bef893, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 88c12ddcd9f2fac47829818e34358683, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 707be2b98742345409033ac1f9f7022c, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 533e97fe9fd62894cad8b80d90a29339, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: aeb51496aee66bc4eb39245d16cc0eed, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: ba95258339da30a468a0f8d04e6fffd0, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: e4c292e0cd95749449582dbacb13561f, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 26272413ab248474080273763bdb039a, type: 2}

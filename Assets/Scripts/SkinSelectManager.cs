@@ -29,11 +29,14 @@ public class SkinSelectManager : MonoBehaviour
 
     void Start()
     {
-        if (SkinManager.instance == null) return;
+        if (SkinManager.instance == null)
+        {
+            Debug.LogWarning("SkinManager chưa có — load từ MainMenu trước!");
+            return;
+        }
 
         danhSach = SkinManager.instance.LayDanhSach();
 
-        // Bắt đầu ở skin đang dùng
         string skinDangDung = SkinManager.instance.LaySkinDangDung();
         indexHienTai = danhSach.FindIndex(s => s.id == skinDangDung);
         if (indexHienTai < 0) indexHienTai = 0;
@@ -44,52 +47,60 @@ public class SkinSelectManager : MonoBehaviour
     void HienThiSkin(int idx)
     {
         if (danhSach == null || danhSach.Count == 0) return;
+        if (SkinManager.instance == null) return;
 
         var skin = danhSach[idx];
 
-        // Preview
-        Sprite sp = SkinManager.instance.LaySpriteSkin(skin.id);
-        if (sp != null) imgPreview.sprite = sp;
-        imgPreview.color = skin.daUnlock
-            ? Color.white
-            : new Color(0.2f, 0.2f, 0.2f);
-
-        // Tên
-        txtTenSkin.text = skin.ten;
-        txtTenSkin.color = skin.daUnlock
-            ? new Color(0.91f, 0.91f, 0.82f)
-            : new Color(0.3f, 0.3f, 0.3f);
-
-        // Mô tả
-        txtMoTa.text = skin.daUnlock ? skin.moTa : "???";
-
-        // Điều kiện
-        if (skin.daUnlock)
+        // Preview — check null trước
+        if (imgPreview != null)
         {
-            // Đang dùng skin này chưa?
-            bool dangDung = SkinManager.instance.LaySkinDangDung() == skin.id;
-            txtDieuKien.text = dangDung ? "✓ Đang dùng" : "";
-            txtDieuKien.color = new Color(0.96f, 0.78f, 0.26f);
-        }
-        else
-        {
-            txtDieuKien.text = "🔒 " + skin.dieuKienMo;
-            txtDieuKien.color = new Color(0.3f, 0.3f, 0.3f);
+            Sprite sp = SkinManager.instance.LaySpriteSkin(skin.id);
+            if (sp != null) imgPreview.sprite = sp;
+            imgPreview.color = skin.daUnlock
+                ? Color.white
+                : new Color(0.2f, 0.2f, 0.2f);
         }
 
-        // Nút chọn
-        nutChon.interactable = skin.daUnlock;
-        nutChon.GetComponent<Image>().color = skin.daUnlock
-            ? new Color(0.96f, 0.78f, 0.26f)
-            : new Color(0.16f, 0.16f, 0.16f);
-        nutChon.GetComponentInChildren<TextMeshProUGUI>().color = skin.daUnlock
-            ? new Color(0.1f, 0.1f, 0.1f)
-            : new Color(0.3f, 0.3f, 0.3f);
+        if (txtTenSkin != null)
+        {
+            txtTenSkin.text = skin.ten;
+            txtTenSkin.color = skin.daUnlock
+                ? new Color(0.91f, 0.91f, 0.82f)
+                : new Color(0.3f, 0.3f, 0.3f);
+        }
 
-        // Mũi tên
+        if (txtMoTa != null)
+            txtMoTa.text = skin.daUnlock ? skin.moTa : "???";
+
+        if (txtDieuKien != null)
+        {
+            if (skin.daUnlock)
+            {
+                bool dangDung = SkinManager.instance.LaySkinDangDung() == skin.id;
+                txtDieuKien.text = dangDung ? "Đang dùng" : "";
+                txtDieuKien.color = new Color(0.96f, 0.78f, 0.26f);
+            }
+            else
+            {
+                txtDieuKien.text = "🔒 " + skin.dieuKienMo;
+                txtDieuKien.color = new Color(0.3f, 0.3f, 0.3f);
+            }
+        }
+
+        if (nutChon != null)
+        {
+            nutChon.interactable = skin.daUnlock;
+            nutChon.GetComponent<Image>().color = skin.daUnlock
+                ? new Color(0.96f, 0.78f, 0.26f)
+                : new Color(0.16f, 0.16f, 0.16f);
+            var txt = nutChon.GetComponentInChildren<TextMeshProUGUI>();
+            if (txt != null)
+                txt.color = skin.daUnlock
+                    ? new Color(0.1f, 0.1f, 0.1f)
+                    : new Color(0.3f, 0.3f, 0.3f);
+        }
+
         CapNhatMuiTen(idx);
-
-        // Dots
         CapNhatDots(idx);
     }
 

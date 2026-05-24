@@ -22,12 +22,33 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
+            DamBaoCoEventSystem();
         }
         else
         {
             Destroy(gameObject);
+            return;
         }
         KhoiTaoUnlock();
+    }
+
+    void DamBaoCoEventSystem()
+    {
+        // Nếu chưa có EventSystem nào → tạo mới
+        var es = FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>();
+        if (es == null)
+        {
+            GameObject goES = new GameObject("EventSystem");
+            goES.AddComponent<UnityEngine.EventSystems.EventSystem>();
+            goES.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+            DontDestroyOnLoad(goES);
+            Debug.Log("Đã tạo EventSystem mới");
+        }
+        else
+        {
+            // Giữ EventSystem hiện tại xuyên scene
+            DontDestroyOnLoad(es.gameObject);
+        }
     }
 
     void KhoiTaoUnlock()
